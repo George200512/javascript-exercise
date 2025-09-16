@@ -20,7 +20,7 @@ class Task{
     
     static edit(id, key, value){
         let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        if (id < 1 || id >= tasks.length + 1){
+        if (id < 1 || id > tasks.length || tasks.length === 0){
             throw new Error('Id not found.')
         }
         tasks = JSON.parse(localStorage.getItem("tasks"));
@@ -32,11 +32,31 @@ class Task{
     
     static delete(id){
         let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        if (id < 1 || id > tasks.length){
+        if (id < 1 || id > tasks.length || tasks.length === 0){
             throw new Error("Id not found.");
         }else{
-            delete tasks[id - 1];
+            tasks.splice(id - 1, 1);
             localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+    }
+    
+    static markDone(id){
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        if (id < 1 || id > tasks.length || tasks.length === 0){
+            throw new Error("Id not found");
+        }else{
+            tasks[id - 1].status = true;
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+    }
+    
+    static markUndone(id){
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        if (id < 1 || id > tasks.length || tasks.length === 0){
+            throw new Error("Id not found");
+        }else{
+            let task = tasks[id - 1].status = false;
+            localStorage.setItem('tasks', JSON.stringify(tasks));
         }
     }
 }
@@ -44,10 +64,11 @@ class Task{
 //Define home function
 
 function home(){
-    console.log('Welcome to Alpha ToDo');
-    console.log('1.Create A Task.');
-    console.log('2.View Tasks.');
-    console.log('3.Delete A Task.');
+    alert(`
+    Welcome to Alpha ToDo
+    1.Create A Task.
+    2.View Tasks.
+    `)
     let choice = prompt('Chose: ');
     if (choice !== null){
         choice = Number(choice);
@@ -55,22 +76,21 @@ function home(){
             switch (choice){
                 case 1:
                 createTask();
+                alert('Done !');
                 break;
                 case 2:
                 viewTasks();
-                break;
-                case 3:
-                deleteTask();
+                alert('Done !');
                 break;
                 default:
                 home();
             }
         }else{
-            console.log('Wrong input. Please try again');
+            alert('Wrong input. Please try again');
             home();
         }
     }else{
-        console.log("Good Bye");
+        alert("Good Bye");
     }
 }
 
@@ -88,12 +108,13 @@ function createTask(){
 function preview(task){
     console.log('Preview Your Task');
     for (let key in task){
-        console.log(`${key}:${task[key]}`);
+        alert(`${key}:${task[key]}`);
     }
     let $confirm = confirm('Do you want to save?');
     if ($confirm){
         task = new Task(task['title'], task['description'], task['status']);
         task.save();
+        alert('Done !');
     }else{
         home();
     }
@@ -106,27 +127,73 @@ function viewTasks(){
     let tasks = JSON.parse(localStorage.getItem('tasks'));
     let i = 1;
     for (let data of tasks){
-        console.log(`Task ${i}`);
+        alert(`Task ${i}`);
         i ++;
         for (let key in data){
-            console.log(`${key}:${data[key]}`);
+            alert(`${key}:${data[key]}`);
         }
     }
-    let taskId = prompt("Chose a task: ");
-    console.log(`1.Edit`);
-    console.log(`2.Mark as Done`);
-    console.log(`3.Unmark As Done.`);
-    cosole.log('4.Go back');
+    let taskId = Number(prompt("Chose a task: "));
+    if (isNaN(taskId)){
+        console.log('Invalid input.');
+        viewTasks();
+    }else{
+        alert(
+        `1.Edit
+        2.Mark as Done
+        3.Unmark As Done.
+        4. Delete Task
+        5.Go back
+        `
+        );
     let choice = prompt('Chose: ', 0);
-    switch (choice){
+        try{
+            switch (choice){
         case 0:
         home();
         break;
         case 1:
         editTask(taskId);
+                alert('Done');
         break;
+        case 2:
+        Task.markDone(taskId);
+                alert('Done');
+        break;
+        case 3:
+        Task.markUndone(taskId);
+                alert('Done');
+        break;
+        case 4:
+        Task.delete(taskId);
+                alert("Done");
+    }
+        }catch(e){
+            alert(e.message);
+        }
+    
     }
 }
 
-home();
+function editTask(id){
+    alert('Edit Task');
+    let key = prompt('Enter the key to change: ');
+    let value = prompt('Enter the new value: ');
+    let validKeys = ['title', 'description', 'status'];
+    if (!validKeys.includes(key)){
+     alert('Wrong Key');
+    }else{
+        Task.edit(id, key, value);
+        alert('Done');
+    }
+}
+
+(function(){
+    let $continue;
+    do{
+        home();
+    $continue = confirm('Do you want to continue?');
+    }while($continue);
+})()
+
 
