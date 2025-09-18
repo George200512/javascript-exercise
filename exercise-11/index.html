@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta http-equiv="CONTENT-TYPE" content="text/html; charset=UTF-8">
+  <title>Quiz App</title>
+  <script src='js/quiz.js' type='module'></script>
+</head>
+<body>
+  <h1>
+    Hello, World!
+  </h1>
+  
+  <script>
+  let promise = new Promise(
+  function (resolve, reject){
+    setInterval(function(){resolve("I love you");}, 1000);
+  }
+  ).then(function(v){console.log(v);});
+  
+  </script>
+</body>
+</html>

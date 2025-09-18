@@ -107,12 +107,16 @@ function createTask(){
  
 function preview(task){
     console.log('Preview Your Task');
-    for (let key in task){
-        alert(`${key}:${task[key]}`);
-    }
+        alert(`
+    Title : ${task.title}
+    Description : ${task.description}
+    Status : ${task.status}
+    `
+    );
+    
     let $confirm = confirm('Do you want to save?');
     if ($confirm){
-        task = new Task(task['title'], task['description'], task['status']);
+        task = new Task(task['title'], task['description']);
         task.save();
         alert('Done !');
     }else{
@@ -124,14 +128,17 @@ function preview(task){
 
 function viewTasks(){
     console.log('View Tasks');
-    let tasks = JSON.parse(localStorage.getItem('tasks'));
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     let i = 1;
     for (let data of tasks){
-        alert(`Task ${i}`);
-        i ++;
-        for (let key in data){
-            alert(`${key}:${data[key]}`);
-        }
+        alert(
+        `Task ${i}
+        Title : ${tasks[data]}
+        Description : ${tasks[data]}
+        Status : ${tasks[data]}
+        
+        `
+        );
     }
     let taskId = Number(prompt("Chose a task: "));
     if (isNaN(taskId)){
