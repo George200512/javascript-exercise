@@ -54,14 +54,32 @@ function getDay(year, month, date){
 		this.month = month;
 		this.year = year;
 		this.day = new Date(year, month, date).getDay();
-		this.isToday = function() {};
+		this.isToday = function() {
+				let today = new Date();
+				return (
+				today.getFullYear() === this.year && today.getMonth() === this.month && today.getDate() === this.date
+				);
+		};
 }
 
-for(let month of calendar(2025)){
-		for(let days of month){
-				let m = monthsInAYear[days.month];
-				let d = daysOfTheWeek[days.day];
-			let dt = days.date;
-				console.log(`${d}, ${m}, ${dt}`);
+// Return the text that displays the date of a month
+function displayMonth(days){
+		let text = daysOfTheWeek.join(" ") +"\n";
+		let start = 0, stop = 0, week = Array(7).fill(" ");
+		days.forEach((v) => {
+				week[v.day] = `${v.date}`;
+				if (v.day === 6){
+						text += week.join(" ") + "\n";
+						week = Array(7).fill(" ");
+				}
+				if(week.some(v => v !== " ")){
+						text += week.join(" ") + "\n";
+				}
+		})
+		console.log(text);
 		}
+
+for (let month of calendar(2025)){
+		displayMonth(month);
+		console.log("h-hhhhhhhhhhhh");
 }
