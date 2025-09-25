@@ -19,9 +19,9 @@ function* calendar(year){
 
 // Get the days of the month
 function daysInAMonth(year, value, index, array){
-		let days = 28, daysInMonth = [];
-		if (isLeap(year) && index === 1){
-				days = 29;
+		let days, daysInMonth = [];
+		if (index === 1){
+				days = isLeap(year) ? 29 : 28;
 		}else if([8, 3, 5, 10].includes(index)){
 				days = 30;
 		}else{
@@ -67,19 +67,32 @@ function displayMonth(days){
 		let text = daysOfTheWeek.join(" ") +"\n";
 		let start = 0, stop = 0, week = Array(7).fill(" ");
 		days.forEach((v) => {
-				week[v.day] = `${v.date}`;
+				if(v.isToday()){
+						week[v.day] = `(${v.date})`;
+				}else{
+				week[v.day] = v.date;
+				}
 				if (v.day === 6){
-						text += week.join(" ") + "\n";
+						text += week.join("    ") + "\n";
 						week = Array(7).fill(" ");
 				}
-				if(week.some(v => v !== " ")){
-						text += week.join(" ") + "\n";
+		});
+		if(week.some(v => v !== " ")){
+						text += week.join("    ") + "\n";
 				}
-		})
-		console.log(text);
+		return text;
 		}
 
-for (let month of calendar(2025)){
-		displayMonth(month);
-		console.log("h-hhhhhhhhhhhh");
+// Display a text formatted calendar
+function displayCalendar(year) {
+		let text = "Year: " + year + "\n";
+		for (let daysOfAMonth of calendar(year)) {
+				let month = monthsInAYear.at(daysOfAMonth[0].month);
+				text += `${month}: \n`;
+				text += `${displayMonth(daysOfAMonth)} \n`
+		}
+		alert(text);
 }
+
+export default displayCalendar;
+
